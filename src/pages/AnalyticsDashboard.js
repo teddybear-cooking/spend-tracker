@@ -221,18 +221,18 @@ const AnalyticsDashboard = () => {
   return (
     <div className="analytics-dashboard">
       <div className="dashboard-container">
-        <h2>📊 Analytics Dashboard</h2>
+        <h2> Analytics Dashboard</h2>
         
         {/* Summary Cards */}
         <div className="summary-cards">
           <div className="summary-card total-all-time">
-            <h3>💰 Total Spending (All Time)</h3>
+            <h3> Total Spending (All Time)</h3>
             <div className="amount">{formatCurrency(totalAllTime)}</div>
             <div className="subtitle">{transactions.length} transactions</div>
           </div>
           
           <div className="summary-card total-month">
-            <h3>📅 Total Spending (Selected Month)</h3>
+            <h3> Total Spending (Selected Month)</h3>
             <div className="amount">{formatCurrency(totalSelectedMonth)}</div>
             <div className="subtitle">
               {transactions.filter(t => t.date.startsWith(selectedMonth)).length} transactions
@@ -240,7 +240,7 @@ const AnalyticsDashboard = () => {
           </div>
           
           <div className="summary-card filtered-total">
-            <h3>🔍 Filtered Period Total</h3>
+            <h3>Filtered Period Total</h3>
             <div className="amount">{formatCurrency(filteredTotal)}</div>
             <div className="subtitle">{getFilteredTransactions().length} transactions</div>
           </div>
@@ -289,7 +289,7 @@ const AnalyticsDashboard = () => {
 
         {/* Category Summary */}
         <div className="category-summary">
-          <h3>📋 Category Breakdown</h3>
+          <h3>Category Breakdown</h3>
           {categorySummary.length === 0 ? (
             <div className="no-data">
               <p>No spending data for the selected period.</p>

@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { localStorageService } from '../services/localStorage';
-import defaultCategories from '../data/spendingCategories.json';
+import defaultCategories from '../data/spending_data.json';
 import './Journal.css';
+
+const FORM_DATA_KEY = 'spending_tracker_form_data';
 
 const Journal = () => {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
-    category: '',
-    amount: '',
-    description: ''
+  const [formData, setFormData] = useState(() => {
+    // Load from localStorage if available
+    const saved = localStorage.getItem(FORM_DATA_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Ensure date is always set to today if not present
+        return { date: new Date().toISOString().split('T')[0], ...parsed };
+      } catch {
+        // fallback to default
+      }
+    }
+    return {
+      date: new Date().toISOString().split('T')[0],
+      category: '',
+      amount: '',
+      description: ''
+    };
   });
   const [newCategory, setNewCategory] = useState('');
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -24,15 +39,19 @@ const Journal = () => {
     const loadedTransactions = localStorageService.getTransactions();
     const customCategories = localStorageService.getCustomCategories();
     setTransactions(loadedTransactions);
-    setCategories([...defaultCategories, ...customCategories]);
+    setCategories([
+      ...defaultCategories.map(item => item.category),
+      ...customCategories
+    ]);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => {
+      const updated = { ...prev, [name]: value };
+      localStorage.setItem(FORM_DATA_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleSubmit = (e) => {
@@ -67,7 +86,7 @@ const Journal = () => {
       amount: '',
       description: ''
     });
-
+    localStorage.removeItem(FORM_DATA_KEY);
     loadData();
   };
 
@@ -105,6 +124,7 @@ const Journal = () => {
       amount: '',
       description: ''
     });
+    localStorage.removeItem(FORM_DATA_KEY);
   };
 
   const formatCurrency = (amount) => {
@@ -117,7 +137,7 @@ const Journal = () => {
   return (
     <div className="journal">
       <div className="journal-container">
-        <h2>💸 Expense Journal</h2>
+        <h2>Expense Journal</h2>
         
         {/* Transaction Input Form */}
         <div className="transaction-form-card">
@@ -172,7 +192,7 @@ const Journal = () => {
                   onClick={() => setShowAddCategory(!showAddCategory)}
                   className="add-category-btn"
                 >
-                  ➕
+                  Add
                 </button>
               </div>
             </div>
@@ -248,13 +268,13 @@ const Journal = () => {
                         onClick={() => handleEdit(transaction)}
                         className="edit-btn"
                       >
-                        ✏️ Edit
+                        Edit
                       </button>
                       <button 
                         onClick={() => handleDelete(transaction.id)}
                         className="delete-btn"
                       >
-                        🗑️ Delete
+                        Delete
                       </button>
                     </div>
                   </div>
