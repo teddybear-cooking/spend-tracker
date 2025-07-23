@@ -4,20 +4,44 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Light theme variables */
+  --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-secondary: white;
+  --text-primary: #495057;
+  --text-secondary: #6c757d;
+  --border-color: rgba(255, 255, 255, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --card-bg: white;
+}
+
+.dark-theme {
+  /* Dark theme variables */
+  --bg-primary: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  --bg-secondary: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --card-bg: #2d2d2d;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   min-height: 100vh;
+  transition: background 0.3s ease;
 }
 
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 .main-content {
@@ -28,13 +52,15 @@ body {
 
 /* Common styling for cards */
 .card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px var(--shadow-color);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   padding: 24px;
   margin-bottom: 24px;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
 }
 
 /* Button styles */
@@ -63,13 +89,13 @@ body {
 }
 
 .btn-secondary {
-  background: #f8f9fa;
-  color: #495057;
-  border: 1px solid #dee2e6;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-  background: #e9ecef;
+  background: var(--bg-secondary);
   transform: translateY(-1px);
 }
 
@@ -92,7 +118,7 @@ body {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #495057;
+  color: var(--text-primary);
 }
 
 .form-group input,
