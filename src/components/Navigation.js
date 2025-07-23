@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './Navigation.css';
 
-const Navigation = () => {
+const Navigation = ({ isDarkTheme, toggleTheme }) => {
   return (
     <nav className="navigation">
       <div className="nav-container">
@@ -22,6 +22,13 @@ const Navigation = () => {
           >
             📝 Journal
           </NavLink>
+          <button 
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            title={isDarkTheme ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {isDarkTheme ? '☀️' : '🌙'}
+          </button>
         </div>
       </div>
     </nav>
