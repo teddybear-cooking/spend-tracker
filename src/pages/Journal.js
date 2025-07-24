@@ -4,17 +4,23 @@ import defaultCategories from '../data/spending_data.json';
 import './Journal.css';
 
 const FORM_DATA_KEY = 'spending_tracker_form_data';
+const CURRENCY_KEY = 'spending_tracker_currency';
+
+const currencies = [
+  { code: 'USD', symbol: '$' },
+  { code: 'THB', symbol: '฿' },
+  { code: 'MMK', symbol: 'Ks' }
+];
 
 const Journal = () => {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [currency, setCurrency] = useState(() => localStorage.getItem(CURRENCY_KEY) || 'USD');
   const [formData, setFormData] = useState(() => {
-    // Load from localStorage if available
     const saved = localStorage.getItem(FORM_DATA_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Ensure date is always set to today if not present
         return { date: new Date().toISOString().split('T')[0], ...parsed };
       } catch {
         // fallback to default
@@ -54,9 +60,14 @@ const Journal = () => {
     });
   };
 
+  const handleCurrencyChange = (e) => {
+    const newCurrency = e.target.value;
+    setCurrency(newCurrency);
+    localStorage.setItem(CURRENCY_KEY, newCurrency);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     if (!formData.date || !formData.category || !formData.amount) {
       alert('Please fill in all required fields');
       return;
@@ -70,7 +81,8 @@ const Journal = () => {
 
     const transactionData = {
       ...formData,
-      amount: amount
+      amount: amount,
+      currency: currency
     };
 
     if (editingTransaction) {
@@ -107,6 +119,7 @@ const Journal = () => {
       amount: transaction.amount.toString(),
       description: transaction.description || ''
     });
+    setCurrency(transaction.currency || 'USD');
   };
 
   const handleDelete = (id) => {
@@ -127,19 +140,16 @@ const Journal = () => {
     localStorage.removeItem(FORM_DATA_KEY);
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
+  const formatCurrency = (amount, code) => {
+    const symbol = currencies.find(c => c.code === code)?.symbol || '$';
+    return `${symbol}${Number(amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
   };
 
   return (
     <div className="journal">
       <div className="journal-container">
         <h2>Expense Journal</h2>
-        
-        {/* Transaction Input Form */}
+
         <div className="transaction-form-card">
           <h3>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</h3>
           <form onSubmit={handleSubmit} className="transaction-form">
@@ -155,7 +165,7 @@ const Journal = () => {
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="amount">Amount *</label>
                 <input
@@ -169,6 +179,15 @@ const Journal = () => {
                   min="0"
                   required
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="currency">Currency</label>
+                <select value={currency} onChange={handleCurrencyChange}>
+                  {currencies.map(c => (
+                    <option key={c.code} value={c.code}>{c.code}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -187,13 +206,7 @@ const Journal = () => {
                     <option key={index} value={cat}>{cat}</option>
                   ))}
                 </select>
-                <button
-                  type="button"
-                  onClick={() => setShowAddCategory(!showAddCategory)}
-                  className="add-category-btn"
-                >
-                  Add
-                </button>
+                <button type="button" onClick={() => setShowAddCategory(!showAddCategory)} className="add-category-btn">Add</button>
               </div>
             </div>
 
@@ -228,15 +241,12 @@ const Journal = () => {
                 {editingTransaction ? 'Update Transaction' : 'Add Transaction'}
               </button>
               {editingTransaction && (
-                <button type="button" onClick={cancelEdit} className="cancel-btn">
-                  Cancel
-                </button>
+                <button type="button" onClick={cancelEdit} className="cancel-btn">Cancel</button>
               )}
             </div>
           </form>
         </div>
 
-        {/* Transactions History */}
         <div className="transactions-history">
           <h3>Transaction History ({transactions.length})</h3>
           {transactions.length === 0 ? (
@@ -245,40 +255,28 @@ const Journal = () => {
             </div>
           ) : (
             <div className="transactions-list">
-              {transactions
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .map((transaction) => (
-                  <div key={transaction.id} className="transaction-item">
-                    <div className="transaction-main">
-                      <div className="transaction-date">
-                        {new Date(transaction.date).toLocaleDateString()}
-                      </div>
-                      <div className="transaction-details">
-                        <div className="transaction-category">{transaction.category}</div>
-                        {transaction.description && (
-                          <div className="transaction-description">{transaction.description}</div>
-                        )}
-                      </div>
-                      <div className="transaction-amount">
-                        {formatCurrency(transaction.amount)}
-                      </div>
+              {transactions.sort((a, b) => new Date(b.date) - new Date(a.date)).map((transaction) => (
+                <div key={transaction.id} className="transaction-item">
+                  <div className="transaction-main">
+                    <div className="transaction-date">
+                      {new Date(transaction.date).toLocaleDateString()}
                     </div>
-                    <div className="transaction-actions">
-                      <button 
-                        onClick={() => handleEdit(transaction)}
-                        className="edit-btn"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(transaction.id)}
-                        className="delete-btn"
-                      >
-                        Delete
-                      </button>
+                    <div className="transaction-details">
+                      <div className="transaction-category">{transaction.category}</div>
+                      {transaction.description && (
+                        <div className="transaction-description">{transaction.description}</div>
+                      )}
+                    </div>
+                    <div className="transaction-amount">
+                      {formatCurrency(transaction.amount, transaction.currency)}
                     </div>
                   </div>
-                ))}
+                  <div className="transaction-actions">
+                    <button onClick={() => handleEdit(transaction)} className="edit-btn">Edit</button>
+                    <button onClick={() => handleDelete(transaction.id)} className="delete-btn">Delete</button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -287,4 +285,4 @@ const Journal = () => {
   );
 };
 
-export default Journal; 
+export default Journal;

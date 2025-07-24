@@ -25,9 +25,15 @@ ChartJS.register(
   ArcElement
 );
 
+const currencies = {
+  USD: '$',
+  THB: '฿',
+  MMK: 'Ks'
+};
+
 const AnalyticsDashboard = () => {
   const [transactions, setTransactions] = useState([]);
-  const [timeFilter, setTimeFilter] = useState('monthly'); // daily, weekly, monthly
+  const [timeFilter, setTimeFilter] = useState('monthly');
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
 
   useEffect(() => {
@@ -39,71 +45,54 @@ const AnalyticsDashboard = () => {
     setTransactions(loadedTransactions);
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
+  const groupByCurrency = (list) => {
+    return list.reduce((acc, t) => {
+      const currency = t.currency || 'USD';
+      if (!acc[currency]) acc[currency] = 0;
+      acc[currency] += t.amount;
+      return acc;
+    }, {});
   };
 
-  // Calculate total spending for all time
-  const totalAllTime = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+  const formatCurrency = (amount, currency) => {
+    const symbol = currencies[currency] || '$';
+    return `${symbol}${amount.toFixed(2)}`;
+  };
 
-  // Calculate total spending for selected month
-  const totalSelectedMonth = transactions
-    .filter(transaction => transaction.date.startsWith(selectedMonth))
-    .reduce((sum, transaction) => sum + transaction.amount, 0);
-
-  // Filter transactions based on time filter and selected month
   const getFilteredTransactions = () => {
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfWeek = new Date(startOfToday);
-    startOfWeek.setDate(startOfToday.getDate() - startOfToday.getDay());
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
 
     switch (timeFilter) {
       case 'daily':
-        return transactions.filter(transaction => {
-          const transactionDate = new Date(transaction.date);
-          return transactionDate >= startOfToday;
-        });
+        return transactions.filter(t => new Date(t.date).toDateString() === today.toDateString());
       case 'weekly':
-        return transactions.filter(transaction => {
-          const transactionDate = new Date(transaction.date);
-          return transactionDate >= startOfWeek;
-        });
+        return transactions.filter(t => new Date(t.date) >= startOfWeek);
       case 'monthly':
-        return transactions.filter(transaction => 
-          transaction.date.startsWith(selectedMonth)
-        );
+        return transactions.filter(t => t.date.startsWith(selectedMonth));
       default:
         return transactions;
     }
   };
 
-  // Generate line chart data
   const getLineChartData = () => {
-    const filteredTransactions = getFilteredTransactions();
-    const groupedData = {};
-
-    // Group transactions by date
-    filteredTransactions.forEach(transaction => {
-      const date = transaction.date;
-      if (!groupedData[date]) {
-        groupedData[date] = 0;
-      }
-      groupedData[date] += transaction.amount;
+    const filtered = getFilteredTransactions();
+    const dailyTotals = {};
+    filtered.forEach(t => {
+      const date = t.date;
+      if (!dailyTotals[date]) dailyTotals[date] = 0;
+      dailyTotals[date] += t.amount;
     });
-
-    // Sort dates and create chart data
-    const sortedDates = Object.keys(groupedData).sort();
-    const amounts = sortedDates.map(date => groupedData[date]);
+    const sortedDates = Object.keys(dailyTotals).sort();
+    const amounts = sortedDates.map(date => dailyTotals[date]);
 
     return {
       labels: sortedDates.map(date => new Date(date).toLocaleDateString()),
       datasets: [
         {
-          label: 'Daily Spending',
+          label: 'Daily Spending (Mixed Currency)',
           data: amounts,
           borderColor: 'rgb(75, 192, 192)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -113,135 +102,78 @@ const AnalyticsDashboard = () => {
     };
   };
 
-  // Generate pie chart data for categories
   const getPieChartData = () => {
-    const filteredTransactions = getFilteredTransactions();
+    const filtered = getFilteredTransactions();
     const categoryTotals = {};
-
-    filteredTransactions.forEach(transaction => {
-      if (!categoryTotals[transaction.category]) {
-        categoryTotals[transaction.category] = 0;
-      }
-      categoryTotals[transaction.category] += transaction.amount;
+    filtered.forEach(t => {
+      const key = `${t.category} (${t.currency || 'USD'})`;
+      if (!categoryTotals[key]) categoryTotals[key] = 0;
+      categoryTotals[key] += t.amount;
     });
 
-    const categories = Object.keys(categoryTotals);
+    const labels = Object.keys(categoryTotals);
     const amounts = Object.values(categoryTotals);
-
-    // Generate colors for each category
     const colors = [
       '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-      '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384',
-      '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
-      '#FF6384', '#C9CBCF', '#4BC0C0'
+      '#FF9F40', '#8A2BE2', '#7FFF00', '#DC143C', '#00CED1'
     ];
 
     return {
-      labels: categories,
+      labels,
       datasets: [
         {
           data: amounts,
-          backgroundColor: colors.slice(0, categories.length),
-          borderColor: colors.slice(0, categories.length).map(color => color.replace('0.6', '1')),
+          backgroundColor: colors.slice(0, labels.length),
+          borderColor: colors.slice(0, labels.length),
           borderWidth: 1,
         },
       ],
     };
   };
 
-  // Generate category summary
-  const getCategorySummary = () => {
-    const filteredTransactions = getFilteredTransactions();
-    const categoryTotals = {};
-
-    filteredTransactions.forEach(transaction => {
-      if (!categoryTotals[transaction.category]) {
-        categoryTotals[transaction.category] = {
-          total: 0,
-          count: 0
-        };
-      }
-      categoryTotals[transaction.category].total += transaction.amount;
-      categoryTotals[transaction.category].count += 1;
+  const categorySummary = () => {
+    const summary = {};
+    getFilteredTransactions().forEach(t => {
+      const key = `${t.category} (${t.currency || 'USD'})`;
+      if (!summary[key]) summary[key] = { total: 0, count: 0, currency: t.currency };
+      summary[key].total += t.amount;
+      summary[key].count += 1;
     });
-
-    return Object.entries(categoryTotals)
-      .map(([category, data]) => ({ category, ...data }))
-      .sort((a, b) => b.total - a.total);
+    return Object.entries(summary).map(([cat, data]) => ({ category: cat, ...data })).sort((a, b) => b.total - a.total);
   };
 
-  const lineChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: `Spending Trend - ${timeFilter.charAt(0).toUpperCase() + timeFilter.slice(1)}`,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: function(value) {
-            return '$' + value.toFixed(2);
-          }
-        }
-      }
-    }
-  };
-
-  const pieChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'right',
-      },
-      title: {
-        display: true,
-        text: 'Spending by Category',
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-            const percentage = ((context.parsed / total) * 100).toFixed(1);
-            return `${context.label}: ${formatCurrency(context.parsed)} (${percentage}%)`;
-          }
-        }
-      }
-    },
-  };
-
-  const categorySummary = getCategorySummary();
-  const filteredTotal = getFilteredTransactions().reduce((sum, t) => sum + t.amount, 0);
+  const allTimeTotals = groupByCurrency(transactions);
+  const monthTotals = groupByCurrency(transactions.filter(t => t.date.startsWith(selectedMonth)));
+  const filteredTotals = groupByCurrency(getFilteredTransactions());
 
   return (
     <div className="analytics-dashboard">
       <div className="dashboard-container">
-        <h2> Analytics Dashboard</h2>
-        
+        <h2>Analytics Dashboard</h2>
+
         {/* Summary Cards */}
         <div className="summary-cards">
-          <div className="summary-card total-all-time">
-            <h3> Total Spending (All Time)</h3>
-            <div className="amount">{formatCurrency(totalAllTime)}</div>
+          <div className="summary-card">
+            <h3>Total Spending (All Time)</h3>
+            {Object.entries(allTimeTotals).map(([currency, amount]) => (
+              <div key={currency}>{formatCurrency(amount, currency)}</div>
+            ))}
             <div className="subtitle">{transactions.length} transactions</div>
           </div>
-          
-          <div className="summary-card total-month">
-            <h3> Total Spending (Selected Month)</h3>
-            <div className="amount">{formatCurrency(totalSelectedMonth)}</div>
-            <div className="subtitle">
-              {transactions.filter(t => t.date.startsWith(selectedMonth)).length} transactions
-            </div>
+
+          <div className="summary-card">
+            <h3>Total Spending (Selected Month)</h3>
+            {Object.entries(monthTotals).map(([currency, amount]) => (
+              <div key={currency}>{formatCurrency(amount, currency)}</div>
+            ))}
+            <div className="subtitle">{transactions.filter(t => t.date.startsWith(selectedMonth)).length} transactions</div>
           </div>
-          
-          <div className="summary-card filtered-total">
-            <h3>Filtered Period Total</h3>
-            <div className="amount">{formatCurrency(filteredTotal)}</div>
+
+          <div className="summary-card">
+            <h3>Total for Filtered Period</h3>
+            {Object.entries(filteredTotals).map(([currency, amount]) => (
+              <div key={currency}>{formatCurrency(amount, currency)}</div>
+            ))}
             <div className="subtitle">{getFilteredTransactions().length} transactions</div>
           </div>
         </div>
@@ -250,17 +182,13 @@ const AnalyticsDashboard = () => {
         <div className="filter-controls">
           <div className="filter-group">
             <label htmlFor="timeFilter">View by:</label>
-            <select
-              id="timeFilter"
-              value={timeFilter}
-              onChange={(e) => setTimeFilter(e.target.value)}
-            >
+            <select id="timeFilter" value={timeFilter} onChange={(e) => setTimeFilter(e.target.value)}>
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
             </select>
           </div>
-          
+
           <div className="filter-group">
             <label htmlFor="monthSelect">Select Month:</label>
             <input
@@ -276,13 +204,13 @@ const AnalyticsDashboard = () => {
         <div className="charts-section">
           <div className="chart-container">
             <div className="chart-card">
-              <Line data={getLineChartData()} options={lineChartOptions} />
+              <Line data={getLineChartData()} options={{ responsive: true }} />
             </div>
           </div>
-          
+
           <div className="chart-container">
             <div className="chart-card">
-              <Pie data={getPieChartData()} options={pieChartOptions} />
+              <Pie data={getPieChartData()} options={{ responsive: true }} />
             </div>
           </div>
         </div>
@@ -290,24 +218,18 @@ const AnalyticsDashboard = () => {
         {/* Category Summary */}
         <div className="category-summary">
           <h3>Category Breakdown</h3>
-          {categorySummary.length === 0 ? (
-            <div className="no-data">
-              <p>No spending data for the selected period.</p>
-            </div>
+          {categorySummary().length === 0 ? (
+            <p>No spending data for the selected period.</p>
           ) : (
-            <div className="category-list">
-              {categorySummary.map((item, index) => (
-                <div key={index} className="category-item">
-                  <div className="category-info">
-                    <div className="category-name">{item.category}</div>
-                    <div className="category-count">{item.count} transactions</div>
-                  </div>
-                  <div className="category-amount">
-                    {formatCurrency(item.total)}
-                  </div>
+            categorySummary().map((item, index) => (
+              <div key={index} className="category-item">
+                <div className="category-info">
+                  <div className="category-name">{item.category}</div>
+                  <div className="category-count">{item.count} transactions</div>
                 </div>
-              ))}
-            </div>
+                <div className="category-amount">{formatCurrency(item.total, item.currency)}</div>
+              </div>
+            ))
           )}
         </div>
       </div>
@@ -315,4 +237,4 @@ const AnalyticsDashboard = () => {
   );
 };
 
-export default AnalyticsDashboard; 
+export default AnalyticsDashboard;
