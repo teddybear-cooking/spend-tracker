@@ -29,7 +29,7 @@ const Navigation = ({ isDarkTheme, toggleTheme }) => {
             onClick={toggleTheme}
             title={isDarkTheme ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
-            {isDarkTheme ? '☀️' : '🌙'}
+            {isDarkTheme ? '🌙' : '☀️'}
           </button>
         </div>
       </div>

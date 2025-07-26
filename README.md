@@ -1,71 +1,92 @@
-# Spend Tracker
+# Spending Tracker
 
-A simple and modern React application to track your spending, analyze expenses, and manage categories. 
+A React-based web application for tracking personal expenses with analytics board.
+
+## Live Demo
+[https://teddybear-cooking.github.io/spend-tracker/]
+
+## Contributors
+Min La Wee Chan (6520189) • Arkar Phyo (6520052) • Swan Yi Win Thu Ya (6540200)
+
+## Technologies Used
+- React.js
+- React Router (HashRouter)
+- Chart.js with react-chartjs-2
+- Local Storage for data persistence
+- GitHub Pages for deployment
 
 ## Features
-- Add, edit, and delete expense transactions
-- Categorize your spending
-- Visual analytics dashboard (charts, summaries)
-- Persistent data storage using localStorage
+
+### Journal Page
+![Journal Page](screenshots/journal.png)
+
+- Add new transactions with:
+  - Date (required)
+  - Spending category (required)
+  - Amount (required)
+  - Optional description
 - Custom category management
-- Responsive and clean UI
+  - Pre-defined categories from spending-category.json
+  - Ability to add custom categories
+- Transaction history with edit and delete functionality
+- Single user application with no authentication required
+
+### Analytics Dashboard
+![Analytics Dashboard](screenshots/dashboard.png)
+
+- Comprehensive spending overview:
+  - Total spending (all time)
+  - Total spending (selected month)
+  - Filtered period total
+- Flexible time filtering:
+  - Daily view
+  - Weekly view
+  - Monthly view
+- Data Visualization:
+  - Line Chart: Spending trends over time
+  - Pie Chart: Spending distribution by category
+- Category-wise breakdown with transaction counts
+
+## Data Storage
+- Uses browser's Local Storage for data persistence
+- No backend required
+- Data structure includes:
+  - Transaction records
+  - Custom categories
+  - User preferences
+
+## Routing
+- `/` - Journal page (default)
+- `/journal` - Expense entry and transaction history
+- `/analytics` - Spending analysis and visualization
 
 ## Getting Started
 
-### Prerequisites
-- Node.js (v14 or higher recommended)
-- npm (comes with Node.js)
-
-### Installation
 1. Clone the repository:
-   ```sh
-   git clone <your-repo-url>
-   cd spend-tracker
-   ```
+```bash
+git clone https://github.com/teddybear-cooking/spend-tracker.git
+```
+
 2. Install dependencies:
-   ```sh
-   npm install
-   ```
-3. Start the development server:
-   ```sh
-   npm start
-   ```
-   The app will open at [http://localhost:3000](http://localhost:3000).
-
-## Project Structure
-```
-spend-tracker/
-  src/
-    components/         # Reusable UI components
-    data/               # Default data (categories, etc.)
-    pages/              # Main app pages (Journal, AnalyticsDashboard)
-    services/           # Local storage utilities
-    App.js              # Main app component
-    index.js            # Entry point
-  public/               # Static assets
-  package.json          # Project metadata and scripts
+```bash
+cd spend-tracker
+npm install
 ```
 
-## Usage
-- **Journal:** Add and manage your daily expenses.
-- **Analytics Dashboard:** Visualize your spending trends and category breakdowns.
-- **Categories:** Add custom categories for your expenses.
+3. Run the development server:
+```bash
+npm start
+```
 
-## Contributing
-1. Create a new branch for your feature or fix:
-   ```sh
-   git checkout -b feature/your-feature-name
-   ```
-2. Make your changes and commit:
-   ```sh
-   git add .
-   git commit -m "Describe your changes"
-   ```
-3. Push your branch:
-   ```sh
-   git push origin feature/your-feature-name
-   ```
-4. Open a Pull Request on GitHub.
+4. Build for production:
+```bash
+npm run build
+```
 
-## License
-This project is licensed under the MIT License.
+5. Deploy to GitHub Pages:
+```bash
+npm run deploy
+```
+
+## Note
+This is a client-side only application. All data is stored in the browser's Local Storage.
