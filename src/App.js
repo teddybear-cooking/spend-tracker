@@ -28,7 +28,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Journal />} />
             <Route path="/journal" element={<Journal />} />
-            <Route path="/analytics" element={<AnalyticsDashboard />} />
+            <Route path="/analytics" element={<Dashboard />} />
             <Route path="*" element={<Journal />} />
           </Routes>
         </main>
