@@ -6,11 +6,11 @@
 
 :root {
   /* Light theme variables */
-  --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-primary: #e8f5e9;  /* Light green background */
   --bg-secondary: white;
   --text-primary: #495057;
   --text-secondary: #6c757d;
-  --border-color: rgba(255, 255, 255, 0.2);
+  --border-color: rgba(0, 0, 0, 0.1);
   --shadow-color: rgba(0, 0, 0, 0.1);
   --card-bg: white;
 }

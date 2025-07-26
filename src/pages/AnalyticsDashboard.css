@@ -11,7 +11,7 @@
 }
 
 .dashboard-container h2 {
-  color: #212529;
+  color: #2e7d32;  /* Dark green for contrast */
   font-size: 28px;
   font-weight: 600;
   text-align: center;

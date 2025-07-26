@@ -10,7 +10,7 @@
 }
 
 .journal-container h2 {
-  color: white;
+  color: #2e7d32;  /* Dark green for contrast */
   font-size: 32px;
   font-weight: 700;
   text-align: center;
