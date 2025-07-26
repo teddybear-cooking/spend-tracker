@@ -57,13 +57,13 @@
 
 .add-category-btn {
   padding: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #4dabf7;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 18px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   width: 48px;
   height: 48px;
   display: flex;
@@ -72,8 +72,9 @@
 }
 
 .add-category-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  background: #339af0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(77, 171, 247, 0.2);
 }
 
 .add-category-form {
@@ -126,7 +127,7 @@
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #4dabf7;
   color: white;
   padding: 14px 32px;
   border: none;
@@ -134,12 +135,13 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: #339af0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(77, 171, 247, 0.2);
 }
 
 .cancel-btn {
@@ -261,12 +263,12 @@
 }
 
 .edit-btn {
-  background: #17a2b8;
+  background: #4dabf7;
   color: white;
 }
 
 .edit-btn:hover {
-  background: #138496;
+  background: #339af0;
   transform: translateY(-1px);
 }
 

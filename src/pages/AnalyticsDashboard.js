@@ -221,54 +221,58 @@ const AnalyticsDashboard = () => {
   return (
     <div className="analytics-dashboard">
       <div className="dashboard-container">
-        <h2> Analytics Dashboard</h2>
+        <h2>Analytics Dashboard</h2>
         
-        {/* Summary Cards */}
-        <div className="summary-cards">
-          <div className="summary-card total-all-time">
-            <h3> Total Spending (All Time)</h3>
-            <div className="amount">{formatCurrency(totalAllTime)}</div>
-            <div className="subtitle">{transactions.length} transactions</div>
-          </div>
-          
-          <div className="summary-card total-month">
-            <h3> Total Spending (Selected Month)</h3>
-            <div className="amount">{formatCurrency(totalSelectedMonth)}</div>
-            <div className="subtitle">
-              {transactions.filter(t => t.date.startsWith(selectedMonth)).length} transactions
+        {/* Summary Section with Filters */}
+        <div className="summary-section">
+          <div className="summary-cards-container">
+            <div className="summary-cards">
+              <div className="summary-card total-all-time">
+                <h3>Total Spending (All Time)</h3>
+                <div className="amount">{formatCurrency(totalAllTime)}</div>
+                <div className="subtitle">{transactions.length} transactions</div>
+              </div>
+              
+              <div className="summary-card total-month">
+                <h3>Total Spending (Selected Month)</h3>
+                <div className="amount">{formatCurrency(totalSelectedMonth)}</div>
+                <div className="subtitle">
+                  {transactions.filter(t => t.date.startsWith(selectedMonth)).length} transactions
+                </div>
+              </div>
+              
+              <div className="summary-card filtered-total">
+                <h3>Filtered Period Total</h3>
+                <div className="amount">{formatCurrency(filteredTotal)}</div>
+                <div className="subtitle">{getFilteredTransactions().length} transactions</div>
+              </div>
             </div>
           </div>
-          
-          <div className="summary-card filtered-total">
-            <h3>Filtered Period Total</h3>
-            <div className="amount">{formatCurrency(filteredTotal)}</div>
-            <div className="subtitle">{getFilteredTransactions().length} transactions</div>
-          </div>
-        </div>
 
-        {/* Filter Controls */}
-        <div className="filter-controls">
-          <div className="filter-group">
-            <label htmlFor="timeFilter">View by:</label>
-            <select
-              id="timeFilter"
-              value={timeFilter}
-              onChange={(e) => setTimeFilter(e.target.value)}
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-            </select>
-          </div>
-          
-          <div className="filter-group">
-            <label htmlFor="monthSelect">Select Month:</label>
-            <input
-              type="month"
-              id="monthSelect"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-            />
+          {/* Filter Controls */}
+          <div className="filter-controls">
+            <div className="filter-group">
+              <label htmlFor="timeFilter">View by:</label>
+              <select
+                id="timeFilter"
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)}
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+            
+            <div className="filter-group">
+              <label htmlFor="monthSelect">Select Month:</label>
+              <input
+                type="month"
+                id="monthSelect"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
