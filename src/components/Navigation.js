@@ -7,20 +7,22 @@ const Navigation = ({ isDarkTheme, toggleTheme }) => {
     <nav className="navigation">
       <div className="nav-container">
         <div className="nav-logo">
-          <h1>Spending Tracker</h1>
+          <NavLink to="/" className="nav-logo-link">
+            <h1>Spending Tracker</h1>
+          </NavLink>
         </div>
         <div className="nav-links">
-          <NavLink 
-            to="/analytics" 
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          >
-            Analytics Dashboard
-          </NavLink>
           <NavLink 
             to="/journal" 
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
             Journal
+          </NavLink>
+          <NavLink 
+            to="/analytics" 
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Analytics Dashboard
           </NavLink>
           <button 
             className="theme-toggle-btn"

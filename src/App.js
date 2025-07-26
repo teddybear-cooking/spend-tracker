@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navigation from './components/Navigation';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
@@ -21,14 +21,15 @@ function App() {
   };
 
   return (
-    <Router basename="/">
+    <Router>
       <div className={`App ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
         <Navigation isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Navigate to="/journal" replace />} />
+            <Route exact path="/" element={<Journal />} />
             <Route path="/journal" element={<Journal />} />
             <Route path="/analytics" element={<AnalyticsDashboard />} />
+            <Route path="*" element={<Journal />} />
           </Routes>
         </main>
       </div>

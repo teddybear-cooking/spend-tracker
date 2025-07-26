@@ -24,12 +24,13 @@
   height: 70px;
 }
 
-.nav-logo h1 {
-  font-size: 24px;
-  font-weight: 600;
+.nav-logo-link {
+  text-decoration: none;
+}
+
+.nav-logo-link h1 {
   color: #495057;
   margin: 0;
-  transition: color 0.3s ease;
 }
 
 .dark-theme .nav-logo h1 {
