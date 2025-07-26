@@ -21,14 +21,14 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename="/">
       <div className={`App ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
         <Navigation isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Navigate to="/analytics" replace />} />
-            <Route path="/analytics" element={<AnalyticsDashboard />} />
+            <Route path="/" element={<Navigate to="/journal" replace />} />
             <Route path="/journal" element={<Journal />} />
+            <Route path="/analytics" element={<AnalyticsDashboard />} />
           </Routes>
         </main>
       </div>

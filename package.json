@@ -2,7 +2,7 @@
   "name": "spending_tracker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://arkarphyo.github.io/analytic/",
+  "homepage": "https://teddybear-cooking.github.io/spend-tracker",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
