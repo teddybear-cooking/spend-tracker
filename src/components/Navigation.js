@@ -22,7 +22,7 @@ const Navigation = ({ isDarkTheme, toggleTheme }) => {
             to="/analytics" 
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
-            Analytics Dashboard
+            Dashboard
           </NavLink>
           <button 
             className="theme-toggle-btn"
