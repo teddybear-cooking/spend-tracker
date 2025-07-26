@@ -7,9 +7,7 @@ const Navigation = ({ isDarkTheme, toggleTheme }) => {
     <nav className="navigation">
       <div className="nav-container">
         <div className="nav-logo">
-          <NavLink to="/" className="nav-logo-link">
-            <h1>Spending Tracker</h1>
-          </NavLink>
+          <h1>Spending Tracker</h1>
         </div>
         <div className="nav-links">
           <NavLink 

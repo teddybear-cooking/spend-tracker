@@ -19,14 +19,14 @@
 }
 
 .transaction-form-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   padding: 32px;
 }
 
 .transaction-form-card h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 24px;
@@ -43,6 +43,35 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #4dabf7;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group select::placeholder {
+  color: var(--text-secondary);
+}
+
+.form-group select option {
+  background: var(--card-bg);
+  color: var(--text-primary);
 }
 
 .category-input-container {
