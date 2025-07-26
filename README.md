@@ -21,10 +21,10 @@ Min La Wee Chan (6520189) • Arkar Phyo (6520052) • Swan Yi Win Thu Ya (65402
 ![Journal Page](screenshots/journal.png)
 
 - Add new transactions with:
-  - Date (required)
-  - Spending category (required)
-  - Amount (required)
-  - Optional description
+  - Date 
+  - Spending category 
+  - Amount 
+  - description
 - Custom category management
   - Pre-defined categories from spending-category.json
   - Ability to add custom categories
